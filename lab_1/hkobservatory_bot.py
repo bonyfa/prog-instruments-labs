@@ -83,7 +83,7 @@ def check_feed_update():
         ]
 
         with open("feeds.txt", "w") as f:
-            updates = {"current":current, "warning":warning}
+            updates = {"current": current, "warning": warning}
             feeds = updates
             json.dump(updates, f)
 
