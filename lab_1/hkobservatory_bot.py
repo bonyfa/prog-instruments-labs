@@ -16,37 +16,69 @@ def check_feed_update():
         with open("feeds.txt") as f:
             feeds = json.load(f)
         updates = {}
-        current_en_update = feedparser.parse("http://rss.weather.gov.hk/rss/CurrentWeather.xml")
-        warning_en_update = feedparser.parse("http://rss.weather.gov.hk/rss/WeatherWarningBulletin.xml")
+        current_en_update = feedparser.parse(
+            "http://rss.weather.gov.hk/rss/CurrentWeather.xml"
+        )
+        warning_en_update = feedparser.parse(
+            "http://rss.weather.gov.hk/rss/WeatherWarningBulletin.xml"
+        )
 
         if current_en_update:
             current_en = feeds["current"][0]
             if current_en["entries"][0]["published"] != current_en_update.entries[0].published:
-                current_trad_update = feedparser.parse("http://rss.weather.gov.hk/rss/CurrentWeather_uc.xml")
-                current_simp_update = feedparser.parse("http://gbrss.weather.gov.hk/rss/CurrentWeather_uc.xml")
-                current_update = [current_en_update, current_trad_update, current_simp_update]
+                current_trad_update = feedparser.parse(
+                    "http://rss.weather.gov.hk/rss/CurrentWeather_uc.xml"
+                )
+                current_simp_update = feedparser.parse(
+                    "http://gbrss.weather.gov.hk/rss/CurrentWeather_uc.xml"
+                )
+                current_update = [
+                    current_en_update, current_trad_update, current_simp_update
+                ]
                 updates["current"] = current_update
                 feeds["current"] = current_update
 
         if warning_en_update:
             warning_en = feeds["warning"][0]
             if warning_en["entries"][0]["published"] != warning_en_update.entries[0].published:
-                warning_trad_update = feedparser.parse("http://rss.weather.gov.hk/rss/WeatherWarningBulletin_uc.xml")
-                warning_simp_update = feedparser.parse("http://gbrss.weather.gov.hk/rss/WeatherWarningBulletin_uc.xml")
-                warning_update = [warning_en_update, warning_trad_update, warning_simp_update]
+                warning_trad_update = feedparser.parse(
+                    "http://rss.weather.gov.hk/rss/WeatherWarningBulletin_uc.xml"
+                )
+                warning_simp_update = feedparser.parse(
+                    "http://gbrss.weather.gov.hk/rss/WeatherWarningBulletin_uc.xml"
+                )
+                warning_update = [
+                    warning_en_update, warning_trad_update, warning_simp_update
+                ]
                 updates["warning"] = warning_update
                 feeds["warning"] = warning_update
 
     except FileNotFoundError:
-        current_en = feedparser.parse("http://rss.weather.gov.hk/rss/CurrentWeather.xml")
-        current_trad = feedparser.parse("http://rss.weather.gov.hk/rss/CurrentWeather_uc.xml")
-        current_simp = feedparser.parse("http://gbrss.weather.gov.hk/rss/CurrentWeather_uc.xml")
-        current = [current_en, current_trad, current_simp]
+        current_en = feedparser.parse(
+            "http://rss.weather.gov.hk/rss/CurrentWeather.xml"
+        )
+        current_trad = feedparser.parse(
+            "http://rss.weather.gov.hk/rss/CurrentWeather_uc.xml"
+        )
+        current_simp = feedparser.parse(
+            "http://gbrss.weather.gov.hk/rss/CurrentWeather_uc.xml"
+        )
+        current = [
+            current_en, current_trad, current_simp
+        ]
 
-        warning_en = feedparser.parse("http://rss.weather.gov.hk/rss/WeatherWarningBulletin.xml")
-        warning_trad = feedparser.parse("http://rss.weather.gov.hk/rss/WeatherWarningBulletin_uc.xml")
-        warning_simp = feedparser.parse("http://gbrss.weather.gov.hk/rss/WeatherWarningBulletin_uc.xml")
-        warning = [warning_en, warning_trad, warning_simp]
+        warning_en = feedparser.parse(
+            "http://rss.weather.gov.hk/rss/WeatherWarningBulletin.xml"
+        )
+        warning_trad = feedparser.parse(
+            "http://rss.weather.gov.hk/rss/WeatherWarningBulletin_uc.xml"
+        )
+        warning_simp = feedparser.parse(
+            "http://gbrss.weather.gov.hk/rss/WeatherWarningBulletin_uc.xml"
+        )
+        warning = [
+            warning_en, warning_trad, warning_simp
+        ]
 
         with open("feeds.txt", "w") as f:
             updates = {"current":current, "warning":warning}
@@ -133,8 +165,9 @@ def inline_query(bot, update):
                 id="commands",
                 title="Commands",
                 input_message_content=telegram.InputTextMessageContent(
-                    ("Type @hkobservatory_bot + one of the following:\n"
-                    "topics;\ntellme + topic;\nsubscribe + topic;\nunsubscribe + topic;\nenglish;\n繁體中文;\n简体中文;")),
+                    ("Type @hkobservatory_bot + one of the following:\n""topics;"
+                     "\ntellme + topic;\nsubscribe + topic;\nunsubscribe + topic;"
+                     "\nenglish;\n繁體中文;\n简体中文;")),
                 description="List of available commands"
             )
         )
@@ -144,7 +177,9 @@ def inline_query(bot, update):
                 telegram.InlineQueryResultArticle(
                     id="topics",
                     title="Topics",
-                    input_message_content=telegram.InputTextMessageContent(get_topics()),
+                    input_message_content=telegram.InputTextMessageContent(
+                        get_topics()
+                    ),
                     description="List of available topics"
                 )
             )
@@ -153,7 +188,9 @@ def inline_query(bot, update):
                 telegram.InlineQueryResultArticle(
                     id="tellme_current",
                     title="Current Weather",
-                    input_message_content=telegram.InputTextMessageContent(get_feed_message(user_id, "current")),
+                    input_message_content=telegram.InputTextMessageContent(
+                        get_feed_message(user_id, "current")
+                    ),
                     description="Current weather from the HK Observatory"
                 )
             )
@@ -162,7 +199,9 @@ def inline_query(bot, update):
                 telegram.InlineQueryResultArticle(
                     id="tellme_warning",
                     title="Warning",
-                    input_message_content=telegram.InputTextMessageContent(get_feed_message(user_id, "warning")),
+                    input_message_content=telegram.InputTextMessageContent(
+                        get_feed_message(user_id, "warning")
+                    ),
                     description="Warnings in force"
                 )
             )
@@ -171,7 +210,9 @@ def inline_query(bot, update):
                 telegram.InlineQueryResultArticle(
                     id="sub_current",
                     title="Subscribe Current",
-                    input_message_content=telegram.InputTextMessageContent(first_name + " has subscribed to: Current"),
+                    input_message_content=telegram.InputTextMessageContent(
+                        first_name + " has subscribed to: Current"
+                    ),
                     description="Subscribe to current to receive updates"
                 )
             )
@@ -180,7 +221,9 @@ def inline_query(bot, update):
                 telegram.InlineQueryResultArticle(
                     id="sub_warning",
                     title="Subscribe Warning",
-                    input_message_content=telegram.InputTextMessageContent(first_name + " has subscribed to: Warning"),
+                    input_message_content=telegram.InputTextMessageContent(
+                        first_name + " has subscribed to: Warning"
+                    ),
                     description="Subscribe to warning to receive updates"
                 )
             )
@@ -189,7 +232,9 @@ def inline_query(bot, update):
                 telegram.InlineQueryResultArticle(
                     id="unsub_current",
                     title="Unsubscribe Current",
-                    input_message_content=telegram.InputTextMessageContent(first_name + " has unsubscribed from: Current"),
+                    input_message_content=telegram.InputTextMessageContent(
+                        first_name + " has unsubscribed from: Current"
+                    ),
                     description="Unsubscribe from current to stop receiving updates"
                 )
             )
@@ -198,7 +243,9 @@ def inline_query(bot, update):
                 telegram.InlineQueryResultArticle(
                     id="unsub_warning",
                     title="Unsubscribe Warning",
-                    input_message_content=telegram.InputTextMessageContent(first_name + " has unsubscribed from: Warning"),
+                    input_message_content=telegram.InputTextMessageContent(
+                        first_name + " has unsubscribed from: Warning"
+                    ),
                     description="Unsubscribe from warning to stop receiving updates"
                 )
             )
@@ -207,7 +254,9 @@ def inline_query(bot, update):
                 telegram.InlineQueryResultArticle(
                     id="lang_english",
                     title="English",
-                    input_message_content=telegram.InputTextMessageContent(first_name + "\'s language changed to English"),
+                    input_message_content=telegram.InputTextMessageContent(
+                        first_name + "\'s language changed to English"
+                    ),
                     description="Select English as topic information language"
                 )
             )
@@ -216,7 +265,9 @@ def inline_query(bot, update):
                 telegram.InlineQueryResultArticle(
                     id="lang_traditional",
                     title="繁體中文",
-                    input_message_content=telegram.InputTextMessageContent(first_name + "\'s language changed to 繁體中文"),
+                    input_message_content=telegram.InputTextMessageContent(
+                        first_name + "\'s language changed to 繁體中文"
+                    ),
                     description="Select 繁體中文 as topic information language"
                 )
             )
@@ -225,7 +276,9 @@ def inline_query(bot, update):
                 telegram.InlineQueryResultArticle(
                     id="lang_simplified",
                     title="简体中文",
-                    input_message_content=telegram.InputTextMessageContent(first_name + "\'s language changed to 简体中文"),
+                    input_message_content=telegram.InputTextMessageContent(
+                        first_name + "\'s language changed to 简体中文"
+                    ),
                     description="Select 简体中文 as topic information language"
                 )
             )
