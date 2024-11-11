@@ -14,6 +14,9 @@ job_queue = updater.job_queue
 
 # Checks if feeds have updated by comparing saved feed dates to new feed
 def check_feed_update():
+    """
+    check_feed_update
+    """
     try:
         with open("feeds.txt") as f:
             feeds = json.load(f)
@@ -93,25 +96,32 @@ def check_feed_update():
     return updates
 
 
-# Returns language preferences for all users
 def get_user_language():
+    """
+    Returns language preferences for all users
+    """
     try:
         with open("user_language.txt") as f:
             user_language = json.load(f)
     except FileNotFoundError:
         user_language = {}
-    return user_language;
+    return user_language
 
 
 def get_topics():
+    """
+    get_topics
+    """
     topics = ["Current - Current weather information",
               "Warning - Warnings in force"]
     topics = "The topics I can tell you about are:\n" + "\n".join(topics)
     return topics
 
 
-# Returns the formatted feed in the user's preferred language
 def get_feed_message(user_id, topic):
+    """
+     Returns the formatted feed in the user's preferred language
+     """
     check_feed_update()
     user_language = get_user_language()
     language = user_language.get(user_id, "english")
@@ -150,12 +160,17 @@ def get_feed_message(user_id, topic):
 
 
 def start(bot, update):
+    """
+    start
+    """
     message = "Hi, I'm HKObservatoryBot! Type @hkobservatory_bot to see what I can do!"
     bot.sendMessage(chat_id=update.message.chat_id, text=message)
 
 
-# Handles inline queries from user
 def inline_query(bot, update):
+    """
+    Handles inline queries from user
+    """
     query = update.inline_query.query
     results = []
     user_id = str(update.inline_query.from_user.id)
@@ -287,8 +302,10 @@ def inline_query(bot, update):
     bot.answerInlineQuery(update.inline_query.id, results, cache_time=0)
 
 
-# Saves language preferences and subscriptions
 def inline_result(bot, update):
+    """
+    Saves language preferences and subscriptions
+    """
     result_id = update.chosen_inline_result.result_id
     user_id = str(update.chosen_inline_result.from_user.id)
 
@@ -328,8 +345,10 @@ def inline_result(bot, update):
             json.dump(subscribers, f)
 
 
-# Sends updates to subscribed users
 def send_update(bot, job):
+    """
+    Sends updates to subscribed users
+    """
     try:
         with open("subscribers.txt") as f:
             subscribers = json.load(f)
