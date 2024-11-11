@@ -4,8 +4,8 @@ import bs4
 import telegram
 import telegram.ext
 
-bot_token = "243527010:AAGWz1pfH5uIKOFAH2A6M6wwIoVdhwhjxzY"
-updater = telegram.ext.Updater(token=bot_token)
+BOT_TOKEN = "243527010:AAGWz1pfH5uIKOFAH2A6M6wwIoVdhwhjxzY"
+updater = telegram.ext.Updater(token=BOT_TOKEN)
 dispatcher = updater.dispatcher
 job_queue = updater.job_queue
 
