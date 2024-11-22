@@ -2,20 +2,22 @@ import json
 import feedparser
 import bs4
 
-
 import telegram
 import telegram.ext
 
-BOT_TOKEN = "243527010:AAGWz1pfH5uIKOFAH2A6M6wwIoVdhwhjxzY"
+BOT_TOKEN = "243527010:AAGWz1pfH5uIKOFAH2A6M6wwIoVdhwhjzY"
 updater = telegram.ext.Updater(token=BOT_TOKEN)
 dispatcher = updater.dispatcher
 job_queue = updater.job_queue
 
 
-# Checks if feeds have updated by comparing saved feed dates to new feed
-def check_feed_update():
+def check_feed_update() -> dict:
     """
-    check_feed_update
+    check feed update and warnings
+    pars updates update and warnings
+    Parameters: None
+    Return: dict jf parsed updates and warnings
+
     """
     try:
         with open("feeds.txt") as f:
@@ -96,9 +98,11 @@ def check_feed_update():
     return updates
 
 
-def get_user_language():
+def get_user_language() -> list:
     """
     Returns language preferences for all users
+    Parameters: None
+    Return: str with user language
     """
     try:
         with open("user_language.txt") as f:
@@ -108,9 +112,12 @@ def get_user_language():
     return user_language
 
 
-def get_topics():
+def get_topics() -> str:
     """
-    get_topics
+    get topics(warning and Current weather information)
+    Parameters: None
+    Return: str with topics
+
     """
     topics = ["Current - Current weather information",
               "Warning - Warnings in force"]
@@ -118,10 +125,12 @@ def get_topics():
     return topics
 
 
-def get_feed_message(user_id, topic):
+def get_feed_message(user_id: str, topic: str) -> str:
     """
      Returns the formatted feed in the user's preferred language
-     """
+
+
+    """
     check_feed_update()
     user_language = get_user_language()
     language = user_language.get(user_id, "english")
@@ -159,17 +168,24 @@ def get_feed_message(user_id, topic):
     return message
 
 
-def start(bot, update):
+def start(bot, update) -> None:
     """
     start
+    starting message
+    Parameters: bot, update
+    Return: None
+
     """
     message = "Hi, I'm HKObservatoryBot! Type @hkobservatory_bot to see what I can do!"
     bot.sendMessage(chat_id=update.message.chat_id, text=message)
 
 
-def inline_query(bot, update):
+def inline_query(bot, update) -> None:
     """
     Handles inline queries from user
+    Parameters: bot, update
+    Return: None
+
     """
     query = update.inline_query.query
     results = []
@@ -305,6 +321,9 @@ def inline_query(bot, update):
 def inline_result(bot, update):
     """
     Saves language preferences and subscriptions
+    Parameters: bot, update
+    Return: None
+
     """
     result_id = update.chosen_inline_result.result_id
     user_id = str(update.chosen_inline_result.from_user.id)
@@ -345,9 +364,12 @@ def inline_result(bot, update):
             json.dump(subscribers, f)
 
 
-def send_update(bot, job):
+def send_update(bot, job) -> None:
     """
     Sends updates to subscribed users
+    Parameters: bot, update
+    Return: None
+
     """
     try:
         with open("subscribers.txt") as f:
