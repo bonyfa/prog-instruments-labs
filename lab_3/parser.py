@@ -12,6 +12,7 @@ from typing import List
 
 URL = "https://akbotadoya.ru/akkumulyatory?page="
 
+
 def parse_arguments() -> argparse:
     """
             Получаем ссылку путь директории и количество страниц
@@ -22,6 +23,7 @@ def parse_arguments() -> argparse:
     parser.add_argument("--urls", type=str, default="https://akbotadoya.ru/akkumulyatory?page=", help="Базовый URL для сбора данных")
     parser.add_argument("--pages", type=int, default=3, help="Количество страниц для обхода")
     return parser.parse_args()
+
 
 def get_html_code(page: int , url: str) -> BeautifulSoup:
     """
@@ -44,13 +46,31 @@ def get_html_code(page: int , url: str) -> BeautifulSoup:
         logging.exception(f"Ошибка при получении html кода")
         return None
 
+
 def random_user_agent() -> str:
     u = UserAgent()
     return u.random
 
+
+def get_name_of_battery(code: BeautifulSoup) -> str:
+    try:
+        name = code.find_all('div', class_="product-name")
+        if name is not None:
+            return name
+        else:
+            return "Названия не найдены не найден"
+    except requests.exceptions.RequestException as e:
+        logging.exception(f"Ошибка при получении названия аккумуляторов")
+        return None
+
+
 if __name__ == "__main__":
     args = parse_arguments()
     string = get_html_code(1, URL)
-    print(string)
-    print("sdad")
+
+    n = get_name_of_battery(string)
+    for na in n:
+         print(na.get_text())
+    print(n)
+
 
