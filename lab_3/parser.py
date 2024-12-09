@@ -53,14 +53,34 @@ def random_user_agent() -> str:
 
 
 def get_name_of_battery(code: BeautifulSoup) -> str:
+    """
+                   Получаем html код названий аккумуляторов.
+
+    """
     try:
         name = code.find_all('div', class_="product-name")
         if name is not None:
             return name
         else:
-            return "Названия не найдены не найден"
+            return "Названия не найдены "
     except requests.exceptions.RequestException as e:
         logging.exception(f"Ошибка при получении названия аккумуляторов")
+        return None
+
+
+def get_price_of_battery(code: BeautifulSoup) -> str:
+    """
+                   Получаем html код цен на  аккумуляторы.
+
+    """
+    try:
+        price = code.find_all('p', class_="price")
+        if price is not None:
+            return price
+        else:
+            return "Цены не найдены"
+    except requests.exceptions.RequestException as e:
+        logging.exception(f"Ошибка при получении цен на аккумуляторов")
         return None
 
 
@@ -68,9 +88,9 @@ if __name__ == "__main__":
     args = parse_arguments()
     string = get_html_code(1, URL)
 
-    n = get_name_of_battery(string)
+    n = get_price_of_battery(string)
     for na in n:
-         print(na.get_text())
-    print(n)
+        print(na.get_text())
+
 
 
