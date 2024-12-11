@@ -33,6 +33,22 @@ def open_csv(path : str) -> pd.DataFrame:
     except Exception as e:
         print(f"Ошибка при определении кодировки файла {CSV_PATH}: {e}")
         raise
+
+
+def get_invalid_index(path: str) -> list:
+    """
+    function get list of index invalid rows
+    :param path:
+    :return: list
+    """
+    data = open_csv(path)
+    index_list = list()
+    for index, row in data.iterrows():
+        if not check_invalid_row(row):
+            index_list.append(index)
+    return index_list
+
+
 def check_invalid_row(row : pd.Series) -> bool:
     """
     Check row and return invalid it or no
@@ -47,3 +63,6 @@ def check_invalid_row(row : pd.Series) -> bool:
 
 
 if __name__ == "__main__":
+    list_index = get_invalid_index(CSV_PATH)
+    print(len(list_index))
+   
