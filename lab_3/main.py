@@ -65,4 +65,3 @@ def check_invalid_row(row : pd.Series) -> bool:
 if __name__ == "__main__":
     list_index = get_invalid_index(CSV_PATH)
     print(len(list_index))
-   
