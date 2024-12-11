@@ -5,7 +5,7 @@ import pandas as pd
 import checksum as check
 
 
-REGULAR ={
+REGULARS ={
     "email": r"^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$",
     "http_status_message": r"^\d{3} [A-Za-z ]+$",
     "inn": r"",
@@ -18,5 +18,16 @@ REGULAR ={
     "uuid": r"",
     "time": r"^\d{2}:\d{2}:\d{2}\.\d{6}$"
 }
+
+
+def open_csv(path : str) -> pd.DataFrame:
+    """
+    function open csv file and get out info
+    :param path: str
+    :return: DataFrame
+    """
+    data = pd.read_csv(path, encoding="utf-16", sep=";")
+    return data
+
 
 if __name__ == "__main__":
