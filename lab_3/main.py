@@ -3,6 +3,7 @@ import os
 
 import pandas as pd
 import checksum as check
+from constants import CSV_PATH
 
 
 REGULARS ={
@@ -26,8 +27,23 @@ def open_csv(path : str) -> pd.DataFrame:
     :param path: str
     :return: DataFrame
     """
-    data = pd.read_csv(path, encoding="utf-16", sep=";")
-    return data
+    try:
+        data = pd.read_csv(path, encoding="utf-16", sep=";")
+        return data
+    except Exception as e:
+        print(f"Ошибка при определении кодировки файла {CSV_PATH}: {e}")
+        raise
+def check_invalid_row(row : pd.Series) -> bool:
+    """
+    Check row and return invalid it or no
+    :param row: pd.Series
+    :return: bool
+    """
+    for name_column, value in zip(REGULARS.keys(), row):
+        pattern = REGULARS[name_column]
+        if not re.search(pattern, str(value)):
+            return False
+    return True
 
 
 if __name__ == "__main__":
