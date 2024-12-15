@@ -12,6 +12,7 @@ from typing import List
 FOLDER_NAME_G = "good"
 FOLDER_NAME_B = "bad"
 
+
 def parse_arguments() -> argparse:
     """
             Получаем ссылку путь директории и количество страниц
@@ -42,8 +43,7 @@ def get_html_code(page: int , url: str) -> BeautifulSoup:
         soup = BeautifulSoup(tmp_res.content, "html.parser")
         return soup
     except requests.exceptions.RequestException as e:
-        logging.exception(f"Ошибка при получении html кода")
-        return None
+        logging.error(f"Ошибка при получении html кода для страницы {page}: {e}")
 
 
 def get_reviews(soup: BeautifulSoup) -> List[BeautifulSoup]:
@@ -52,10 +52,10 @@ def get_reviews(soup: BeautifulSoup) -> List[BeautifulSoup]:
 
     """
     try:
-            reviews = soup.find('ul', class_="list-comments").find_all('li')
-            return reviews
+        reviews = soup.find('ul', class_="list-comments").find_all('li')
+        return reviews
     except Exception as e:
-        logging.exception("Ошибка при получении списка рецензий:")
+        logging.error(f"Ошибка при получении списка рецензий: {e}")
 
 
 def review_text(review: BeautifulSoup) -> str:
@@ -70,7 +70,7 @@ def review_text(review: BeautifulSoup) -> str:
         else:
             return "Текст рецензии не найден"
     except Exception as e:
-        logging.exception("Ошибка при получении текста рецензии:", e)
+        logging.error(f"Ошибка при получении текста рецензии: {e}")
 
 
 def get_name(soup:BeautifulSoup) -> str:
@@ -85,7 +85,7 @@ def get_name(soup:BeautifulSoup) -> str:
         else:
             return "Текст названия не найден"
     except Exception as e:
-        logging.exception("Ошибка при получении текста названия:", e)
+        logging.error(f"Ошибка при получении текста названия: {e}")
 
 
 def status_review(review: BeautifulSoup) -> bool:
@@ -100,7 +100,7 @@ def status_review(review: BeautifulSoup) -> bool:
         else:
             return False
     except Exception as e:
-        logging.exception("Ошибка при получении статуса рецензии:", e)
+        logging.error(f"Ошибка при получении статуса рецензии: {e}")
 
 
 def random_user_agent() -> str:
@@ -118,8 +118,10 @@ def create_directories(page: int, urls: str, out_dir: str) -> None:
         folder_path_b = os.path.join(args.out_dir, FOLDER_NAME_B)
         if not os.path.exists(folder_path_g):
             os.makedirs(folder_path_g)
+            logging.info(f"Создана директория {folder_path_g}")
         if not os.path.exists(folder_path_b):
             os.makedirs(folder_path_b)
+            logging.info(f"Создана директория {folder_path_g}")
     except Exception as e:
         logging.exception(f"Ошибка при создании папки: {e.args}")
 
@@ -138,9 +140,9 @@ def save_review_to_file(review_text: str, status_review: bool, review_n_g: int, 
 
     try:
         with open(file_path, "w", encoding="utf-8") as file:
-            file.write(review_text)
+            logging.info(f"Рецензия сохранена в файл {file_path}")
     except Exception as e:
-        logging.exception(f"Ошибка при сохранении рецензии : {e}")
+        logging.error(f"Ошибка при сохранении рецензии в файл {file_path}: {e}")
 
 
 def parsing_review(page: int, urls: str, out_dir: str) -> None:
@@ -165,11 +167,12 @@ def parsing_review(page: int, urls: str, out_dir: str) -> None:
                     review_n_b += 1
                     number += 1
     except Exception as e:
-        logging.exception(f"Ошибка при сохранении рецензии : {e}")
+        logging.error(f"Ошибка при парсинге: {e}")
 
 
 if __name__ == "__main__":
     args = parse_arguments()
+    logging.info(f"Запуск скрипта с аргументами: {vars(args)}")
     create_directories(*(vars(args).values()))
     parsing_review(*(vars(args).values()))
 
