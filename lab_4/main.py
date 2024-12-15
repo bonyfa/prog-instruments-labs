@@ -13,19 +13,37 @@ FOLDER_NAME_G = "good"
 FOLDER_NAME_B = "bad"
 
 
+logging.basicConfig(
+    level=logging.DEBUG,
+    format="%(asctime)s - %(levelname)s - %(message)s",
+    handlers=[
+        logging.FileHandler("parser_log.log", mode="w", encoding="utf-8"),
+        logging.StreamHandler()  # Для вывода логов в консоль
+    ]
+)
+
+
 def parse_arguments() -> argparse:
     """
             Получаем ссылку путь директории и количество страниц
 
     """
-    parser = argparse.ArgumentParser(description="Скрипт для парсинга рецензий с сайта и сортировка их на хорошии и плохие")
-    parser.add_argument("--out_dir", type=str, default="dataset", help="Путь к директории для сохранения датасета")
-    parser.add_argument("--urls", type=str, default="https://irecommend.ru/content/internet-magazin-ozon-kazan-0?page=", help="Базовый URL для сбора данных")
+    parser = argparse.ArgumentParser(
+        description="Скрипт для парсинга рецензий с сайта и сортировка их на хорошии и плохие"
+    )
+    parser.add_argument(
+        "--out_dir", type=str, default="dataset", help="Путь к директории для сохранения датасета"
+    )
+    parser.add_argument(
+
+        "--urls", type=str, default="https://irecommend.ru/content/internet-magazin-ozon-kazan-0?page=",
+        help="Базовый URL для сбора данных"
+    )
     parser.add_argument("--pages", type=int, default=3, help="Количество страниц для обхода")
     return parser.parse_args()
 
 
-def get_html_code(page: int , url: str) -> BeautifulSoup:
+def get_html_code(page: int, url: str) -> BeautifulSoup:
     """
                Получаем html код страницы.
 
