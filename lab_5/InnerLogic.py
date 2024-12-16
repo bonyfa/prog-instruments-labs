@@ -1,5 +1,7 @@
 import random
 from random import randint, choice
+
+
 class GameError(ValueError):            # класс игровой ошибки
     def __init__(self, *args):
         if args:

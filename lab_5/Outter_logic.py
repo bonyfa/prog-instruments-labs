@@ -5,6 +5,7 @@ from random import randint, choice
 import time
 from time import sleep
 
+
 class Player:               #базовый класс-родитель для двух игроов
     def __init__(self, name: str):  #инициализация по имени игрока
         self.name = name
