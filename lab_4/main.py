@@ -51,6 +51,7 @@ def get_html_code(page: int, url: str) -> BeautifulSoup:
 
     try:
         tmp_url = url+str(page)
+        logging.info(f"Запуск парсинга html кода с этой ссылки {tmp_url} ")
         sleep_time = random.uniform(1, 3)
         sleep(sleep_time)
         headers = {
@@ -59,6 +60,7 @@ def get_html_code(page: int, url: str) -> BeautifulSoup:
         tmp_res = requests.get(tmp_url, headers=headers)
         tmp_res.raise_for_status()
         soup = BeautifulSoup(tmp_res.content, "html.parser")
+        logging.info(f"html код получен")
         return soup
     except requests.exceptions.RequestException as e:
         logging.error(f"Ошибка при получении html кода для страницы {page}: {e}")
@@ -71,6 +73,7 @@ def get_reviews(soup: BeautifulSoup) -> List[BeautifulSoup]:
     """
     try:
         reviews = soup.find('ul', class_="list-comments").find_all('li')
+        logging.info(f"Получен список рецензий")
         return reviews
     except Exception as e:
         logging.error(f"Ошибка при получении списка рецензий: {e}")
@@ -84,6 +87,7 @@ def review_text(review: BeautifulSoup) -> str:
     try:
         review_txt = review.find('div', class_="reviewTextSnippet")
         if review_txt is not None:
+            logging.info(f"Получен текст ревью {review_txt}")
             return review_txt.get_text()
         else:
             return "Текст рецензии не найден"
@@ -91,7 +95,7 @@ def review_text(review: BeautifulSoup) -> str:
         logging.error(f"Ошибка при получении текста рецензии: {e}")
 
 
-def get_name(soup:BeautifulSoup) -> str:
+def get_name(soup: BeautifulSoup) -> str:
     """
             Получасем название обьекта на которые парсим рецензии
 
@@ -99,6 +103,7 @@ def get_name(soup:BeautifulSoup) -> str:
     try:
         name_txt = soup.find('h1',class_="largeHeader")
         if name_txt is not None:
+            logging.info(f"Получено название фильма {name_txt}")
             return name_txt.get_text()
         else:
             return "Текст названия не найден"
@@ -113,6 +118,7 @@ def status_review(review: BeautifulSoup) -> bool:
     """
     try:
         stars = review.find_all(class_='on')
+        logging.error(f"Получен статус рецензии: {len(stars)}")
         if len(stars) > 3:
             return True
         else:
@@ -174,10 +180,12 @@ def parsing_review(page: int, urls: str, out_dir: str) -> None:
         review_n_g = 1
         for page in range(1, args.pages + 1):
             rev = get_reviews(get_html_code(page, args.urls))
+            logging.info(f"Запущена обработка рецензий с ссылки: {args.urls} на {page} странице")
             for review in rev:
                 txt = review_text(review)
                 status = status_review(review)
                 save_review_to_file(txt, status, review_n_g, review_n_b)
+
                 if status:
                     review_n_g += 1
                     number += 1
